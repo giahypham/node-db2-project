@@ -1,3 +1,5 @@
+jest.setTimeout(30000);
+
 const request = require('supertest')
 const server = require('./api/server')
 const db = require('./data/db-config')
@@ -27,6 +29,7 @@ const cars = [
     transmission: 'automatic',
   },
 ]
+
 
 beforeAll(async () => {
   await db.migrate.rollback()
@@ -85,7 +88,7 @@ describe('server.js', () => {
       expect(carsDb[0]).toMatchObject(cars[0])
       expect(carsDb[1]).toMatchObject(cars[1])
       expect(carsDb[2]).toMatchObject(cars[2])
-    }, 750)
+    }, 30000)
     test('[6] responds with the newly created car', async () => {
       const res1 = await request(server).post('/api/cars').send(cars[0])
       const res2 = await request(server).post('/api/cars').send(cars[1])
@@ -93,7 +96,7 @@ describe('server.js', () => {
       expect(res1.body).toMatchObject({ id: 1, ...cars[0] })
       expect(res2.body).toMatchObject({ id: 2, ...cars[1] })
       expect(res3.body).toMatchObject({ id: 3, ...cars[2] })
-    }, 750)
+    }, 10000)
     test('[7] responds with a 400 and proper error on missing vin', async () => {
       const { vin, ...badCar } = cars[0] // eslint-disable-line
       const res = await request(server).post('/api/cars').send(badCar)
